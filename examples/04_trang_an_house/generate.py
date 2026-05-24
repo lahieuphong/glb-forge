@@ -9,14 +9,14 @@ SRC_DIR = PROJECT_ROOT / "src"
 if str(SRC_DIR) not in sys.path:
     sys.path.insert(0, str(SRC_DIR))
 
-from glb_forge import create_trang_an_house, write_scene_glb
+from glb_forge import TRANG_AN_HERITAGE_HOUSE, write_scene_glb
 
 
-OUTPUT_PATH = PROJECT_ROOT / "output" / "trang_an_heritage_house.glb"
+OUTPUT_PATH = TRANG_AN_HERITAGE_HOUSE.output_path(PROJECT_ROOT / "output")
 
 
 def main() -> None:
-    scene = create_trang_an_house(seed=42)
+    scene = TRANG_AN_HERITAGE_HOUSE.create_scene()
     path = write_scene_glb(scene, OUTPUT_PATH)
 
     print(f"Đã tạo: {path}")

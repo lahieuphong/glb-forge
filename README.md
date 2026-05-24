@@ -12,10 +12,12 @@ glb-forge/
 ├─ README.md
 ├─ output/
 │  ├─ .gitkeep
-│  └─ trang_an_heritage_house.glb
+│  └─ 35-Ninh-Binh/
+│     └─ Nha-co-Trang-An.glb
 ├─ src/
 │  └─ glb_forge/
 │     ├─ __init__.py
+│     ├─ catalog.py
 │     ├─ scene.py
 │     ├─ scene_writer.py
 │     └─ scenes/
@@ -45,7 +47,7 @@ python3.12 scripts/generate_all.py
 Kết quả:
 
 ```text
-output/trang_an_heritage_house.glb
+output/35-Ninh-Binh/Nha-co-Trang-An.glb
 ```
 
 ## Chạy kiểu package chuyên nghiệp
@@ -80,7 +82,27 @@ python examples/04_trang_an_house/generate.py
 src/glb_forge/scenes/trang_an_house.py
 → SceneMesh nhiều material
 → write_scene_glb()
-→ output/trang_an_heritage_house.glb
+→ output/35-Ninh-Binh/Nha-co-Trang-An.glb
+```
+
+## Quy ước quản lý output
+
+Mỗi di tích được khai báo trong:
+
+```text
+src/glb_forge/catalog.py
+```
+
+Output dùng dạng:
+
+```text
+output/<ma-tinh>-<ten-tinh>/<Ten-di-tich>.glb
+```
+
+Ví dụ:
+
+```text
+output/35-Ninh-Binh/Nha-co-Trang-An.glb
 ```
 
 ## Scene Tràng An
@@ -112,8 +134,8 @@ Scene hiện có:
 ## Import mẫu
 
 ```python
-from glb_forge import create_trang_an_house, write_scene_glb
+from glb_forge import TRANG_AN_HERITAGE_HOUSE, write_scene_glb
 
-scene = create_trang_an_house(seed=42)
-write_scene_glb(scene, "output/trang_an_heritage_house.glb")
+scene = TRANG_AN_HERITAGE_HOUSE.create_scene()
+write_scene_glb(scene, TRANG_AN_HERITAGE_HOUSE.output_path("output"))
 ```
