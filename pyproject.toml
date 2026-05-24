@@ -3,7 +3,7 @@ requires = ["setuptools>=69"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "glb-forge"
+name = "ninh-binh-trang-an-house-glb"
 version = "0.1.0"
 description = "Pure Python procedural GLB generator for Vietnamese heritage sites"
 readme = "README.md"

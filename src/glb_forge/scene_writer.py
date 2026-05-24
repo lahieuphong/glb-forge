@@ -161,7 +161,7 @@ def write_scene_glb(scene: SceneMesh, output_path: str | Path) -> Path:
     gltf_json = {
         "asset": {
             "version": "2.0",
-            "generator": "glb-forge pure-python procedural scene writer",
+            "generator": "35-ninh-binh-nha-co-trang-an-glb pure-python procedural scene writer",
         },
         "scene": 0,
         "scenes": [

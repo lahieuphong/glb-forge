@@ -1,6 +1,6 @@
-# GLB Forge
+# 35 Ninh Binh Nha Co Trang An GLB
 
-**GLB Forge** là project Python thuần để tạo file `.glb` procedural cho các di tích Việt Nam.
+Project Python thuần để tạo file `.glb` procedural cho **nhà cổ Tràng An, Ninh Bình**.
 
 Project hiện có một di tích:
 
@@ -13,7 +13,7 @@ Code không cần Blender và không cần thư viện ngoài. Toàn bộ mesh, 
 ## Cấu Trúc
 
 ```text
-glb-forge/
+35-ninh-binh-nha-co-trang-an-glb/
 ├─ pyproject.toml
 ├─ README.md
 ├─ output/
@@ -90,7 +90,7 @@ Chứa lệnh chạy riêng cho từng di tích. Đây là lớp tiện dụng, 
 
 ## Chạy Code
 
-Đứng ở thư mục gốc `glb-forge`, chạy riêng nhà cổ Tràng An:
+Đứng ở thư mục gốc `35-ninh-binh-nha-co-trang-an-glb`, chạy riêng nhà cổ Tràng An:
 
 ```bash
 python3.12 generators/35_ninh_binh/nha_co_trang_an.py
