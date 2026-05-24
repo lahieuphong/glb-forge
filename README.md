@@ -17,17 +17,25 @@ glb-forge/
 ├─ src/
 │  └─ glb_forge/
 │     ├─ __init__.py
-│     ├─ catalog.py
+│     ├─ build.py
 │     ├─ scene.py
 │     ├─ scene_writer.py
-│     └─ scenes/
+│     ├─ scenes/
+│     │  ├─ __init__.py
+│     │  └─ trang_an_house.py
+│     └─ sites/
 │        ├─ __init__.py
-│        └─ trang_an_house.py
-├─ examples/
-│  └─ 04_trang_an_house/
-│     └─ generate.py
+│        ├─ models.py
+│        ├─ registry.py
+│        └─ provinces/
+│           ├─ __init__.py
+│           └─ ninh_binh.py
+├─ generators/
+│  └─ 35_ninh_binh/
+│     └─ nha_co_trang_an.py
 └─ scripts/
-   └─ generate_all.py
+   ├─ generate_all.py
+   └─ generate_site.py
 ```
 
 ## Chạy nhanh
@@ -35,13 +43,19 @@ glb-forge/
 Đứng ở thư mục gốc `glb-forge`, chạy:
 
 ```bash
-python3.12 examples/04_trang_an_house/generate.py
+python3.12 generators/35_ninh_binh/nha_co_trang_an.py
 ```
 
 Hoặc dùng script tổng:
 
 ```bash
 python3.12 scripts/generate_all.py
+```
+
+Hoặc build theo registry key:
+
+```bash
+python3.12 scripts/generate_site.py 35-ninh-binh/nha-co-trang-an
 ```
 
 Kết quả:
@@ -73,7 +87,7 @@ pip install -e .
 Sau đó chạy:
 
 ```bash
-python examples/04_trang_an_house/generate.py
+python generators/35_ninh_binh/nha_co_trang_an.py
 ```
 
 ## Luồng tạo GLB
@@ -81,16 +95,19 @@ python examples/04_trang_an_house/generate.py
 ```text
 src/glb_forge/scenes/trang_an_house.py
 → SceneMesh nhiều material
+→ generate_site()
 → write_scene_glb()
 → output/35-Ninh-Binh/Nha-co-Trang-An.glb
 ```
 
-## Quy ước quản lý output
+## Quy ước quản lý di tích
 
-Mỗi di tích được khai báo trong:
+Mỗi di tích có 3 phần tách riêng:
 
 ```text
-src/glb_forge/catalog.py
+src/glb_forge/scenes/<ten_scene>.py                 # geometry/procedural model
+src/glb_forge/sites/provinces/<ten_tinh>.py         # province + site metadata
+generators/<ma_tinh>_<ten_tinh>/<ten_di_tich>.py    # entrypoint riêng nếu cần
 ```
 
 Output dùng dạng:
@@ -99,10 +116,27 @@ Output dùng dạng:
 output/<ma-tinh>-<ten-tinh>/<Ten-di-tich>.glb
 ```
 
-Ví dụ:
+Trường hợp hiện tại:
 
 ```text
 output/35-Ninh-Binh/Nha-co-Trang-An.glb
+```
+
+Registry key trong code dùng dạng slug thường:
+
+```text
+35-ninh-binh/nha-co-trang-an
+```
+
+`src/glb_forge/sites/registry.py` sẽ kiểm tra trùng registry key và trùng output path trước khi generate.
+
+Khi thêm di tích mới:
+
+```text
+1. Tạo hàm scene mới trong src/glb_forge/scenes/
+2. Khai báo HeritageSite trong đúng file tỉnh ở src/glb_forge/sites/provinces/
+3. Thêm site vào danh sách <TINH>_SITES
+4. Nếu muốn có lệnh chạy riêng, thêm file trong generators/<ma_tinh>_<ten_tinh>/
 ```
 
 ## Scene Tràng An
@@ -116,7 +150,7 @@ src/glb_forge/scenes/trang_an_house.py
 File chạy:
 
 ```text
-examples/04_trang_an_house/generate.py
+generators/35_ninh_binh/nha_co_trang_an.py
 ```
 
 Scene hiện có:
@@ -131,11 +165,12 @@ Scene hiện có:
 - núi đá vôi xám và cây xanh phía sau gợi Tràng An
 ```
 
-## Import mẫu
+## Dùng Trong Code
 
 ```python
-from glb_forge import TRANG_AN_HERITAGE_HOUSE, write_scene_glb
+from glb_forge import generate_site, get_site
 
-scene = TRANG_AN_HERITAGE_HOUSE.create_scene()
-write_scene_glb(scene, TRANG_AN_HERITAGE_HOUSE.output_path("output"))
+site = get_site("35-ninh-binh/nha-co-trang-an")
+result = generate_site(site, "output")
+print(result.path)
 ```

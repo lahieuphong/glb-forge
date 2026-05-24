@@ -12,7 +12,7 @@ from glb_forge.scene import SceneMesh, Vec3, v_add, v_cross, v_dot, v_len, v_ler
 
 
 def create_trang_an_house(seed: int = 42) -> SceneMesh:
-    """Tạo mẫu 04: nhà cổ Ninh Bình/Tràng An dạng procedural.
+    """Tạo scene nhà cổ Ninh Bình/Tràng An dạng procedural.
 
     Model cố ý dùng hình học đơn giản + nhiều chi tiết nhỏ thay cho texture ảnh:
     - nhà 1 tầng, bố cục ngang 5 gian
@@ -116,7 +116,7 @@ def _roof_axes(y_eave: float, y_ridge: float, start_z: float, ridge_z: float) ->
     - tile_v: trục dọc viên ngói, cùng phương với v nhưng được chọn để hệ trục hộp đúng chiều.
     - slope_len: chiều dài dốc mái.
 
-    FIX 05: Với mặt mái sau, nếu lấy trực tiếp v_cross(v, u) thì normal bị hướng xuống dưới,
+    Với mặt mái sau, nếu lấy trực tiếp v_cross(v, u) thì normal bị hướng xuống dưới,
     làm các viên ngói bị đặt ở mặt dưới roof_base. Vì vậy ép n luôn có thành phần Y dương.
     """
     u = (1.0, 0.0, 0.0)
@@ -377,7 +377,7 @@ def _add_door_bay(
     leaves = 4
     leaf_w = width / leaves
     for i in range(leaves):
-        # Mở hờ 2 cánh giữa ở một số gian để tạo nhịp tối/sáng như hình mẫu.
+        # Mở hờ 2 cánh giữa ở một số gian để tạo nhịp tối/sáng tự nhiên.
         if open_middle and i in (1, 2):
             continue
         lx = cx - width / 2.0 + leaf_w * (i + 0.5)
@@ -712,9 +712,8 @@ def _add_background_karst(scene: SceneMesh, mat: dict[str, int | list[int]], rng
     for center, height, radius, count in clusters:
         _add_karst_cluster(scene, center, height, radius, count, stone, stone_dark, moss, leaf, leaf_light, rng)
 
-    # FIX 04: thêm cây xanh thật sự phía sau nhà.
-    # Trước đó chỉ có tam giác lá rải rác trên núi nên nhìn xa giống rêu,
-    # chưa ra cảm giác cây. Đoạn này tạo thân/cành + tán lá dạng khối thấp-poly.
+    # Vành đai cây phía sau tạo lớp cảnh quan riêng trước nền núi đá.
+    # Mỗi cây có thân, cành và tán lá dạng khối low-poly.
     _add_background_tree_belt(scene, trunk, leaf, leaf_light, rng)
 
     # Bụi cây thấp sát chân tường để nối cảnh quan với tường đá.

@@ -1,0 +1,7 @@
+from .ninh_binh import NINH_BINH, NINH_BINH_SITES, TRANG_AN_HERITAGE_HOUSE
+
+__all__ = [
+    "NINH_BINH",
+    "NINH_BINH_SITES",
+    "TRANG_AN_HERITAGE_HOUSE",
+]

@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "glb-forge"
 version = "0.1.0"
-description = "Pure Python procedural GLB generator examples"
+description = "Pure Python procedural GLB generator for Vietnamese heritage sites"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = []
