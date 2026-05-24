@@ -33,6 +33,7 @@ def create_trang_an_house(seed: int = 42) -> SceneMesh:
     _add_roof(scene, mat, rng)
     _add_columns_and_wood_frame(scene, mat, rng)
     _add_jars_and_garden(scene, mat, rng)
+    _add_side_gardens(scene, mat, rng)
     _add_background_karst(scene, mat, rng)
 
     return scene
@@ -215,13 +216,13 @@ def _add_low_walls_and_fence(scene: SceneMesh, mat: dict[str, int | list[int]], 
     for yi in range(4):
         scene.add_box((0.0, 0.25 + yi * 0.30, 3.68), (16.4, 0.025, 0.035), stone_dark)
 
-    # Một ít rêu trên tường đá, không quá dày để file nhẹ.
-    for _ in range(38):
+    # Rêu giữ lại nhẹ trên tường đá; phần cây/bụi hai hông được dựng riêng phía dưới.
+    for _ in range(18):
         side = rng.choice([-1.0, 1.0])
         x = side * 8.78
-        y = rng.uniform(0.25, 1.15)
-        z = rng.uniform(-2.3, 3.2)
-        scene.add_box((x, y, z), (0.025, rng.uniform(0.08, 0.22), rng.uniform(0.12, 0.35)), moss)
+        y = rng.uniform(0.22, 0.90)
+        z = rng.uniform(-2.1, 3.0)
+        scene.add_box((x, y, z), (0.025, rng.uniform(0.06, 0.16), rng.uniform(0.10, 0.25)), moss)
 
     # Hàng rào tre thấp phía trước, chừa khoảng giữa cho bậc tam cấp.
     _add_bamboo_fence(scene, bamboo, x0=-8.05, x1=-2.05, z=-6.62)
@@ -408,8 +409,6 @@ def _add_roof(scene: SceneMesh, mat: dict[str, int | list[int]], rng: Random) ->
     stone_light = _mat(mat, "stone_light")
     wood_dark = _mat(mat, "wood_dark")
     wood = _mat(mat, "wood")
-    moss = _mat(mat, "moss")
-
     width = 14.70
     z_front = -2.82
     z_back = 2.82
@@ -476,16 +475,6 @@ def _add_roof(scene: SceneMesh, mat: dict[str, int | list[int]], rng: Random) ->
     for i in range(27):
         x = -6.6 + i * 0.51
         scene.add_box_between((x, 2.33, -1.70), (x, 2.50, -2.62), 0.055, wood_dark, width=0.070)
-
-    # Rêu nhẹ trên mái, làm bằng các hộp mỏng nằm theo mặt mái.
-    for _ in range(42):
-        front = rng.choice([True, False])
-        start_z = z_front if front else z_back
-        u, v, n, tile_v, slope_len = _roof_axes(y_eave, y_ridge, start_z, z_ridge)
-        x = rng.uniform(-6.4, 6.4)
-        dist = rng.uniform(0.35, slope_len - 0.30)
-        center = v_add((x, y_eave, start_z), v_add(v_mul(v, dist), v_mul(n, 0.045)))
-        scene.add_box(center, (rng.uniform(0.18, 0.50), 0.018, rng.uniform(0.05, 0.12)), moss, x_axis=u, y_axis=n, z_axis=tile_v)
 
 
 def _add_roof_plane(
@@ -601,6 +590,135 @@ def _add_jars_and_garden(scene: SceneMesh, mat: dict[str, int | list[int]], rng:
         ((6.85, 0.18, 2.90), 0.75, 24),
     ]:
         _add_leaf_cluster(scene, center, scale, count, leaf, leaf_light, rng)
+
+
+def _add_side_gardens(scene: SceneMesh, mat: dict[str, int | list[int]], rng: Random) -> None:
+    """Thêm cây/bụi hai bên hông nhà để mảng tường đá có chiều sâu hơn."""
+    leaf = _mat(mat, "leaf")
+    leaf_light = _mat(mat, "leaf_light")
+    trunk = _mat(mat, "wood_dark")
+    bamboo = _mat(mat, "bamboo")
+    moss = _mat(mat, "moss")
+
+    # Bụi cây chạy dọc hai hông, nằm trong khoảng giữa tường đá và thân nhà.
+    side_specs = [
+        (-1.0, -7.82, -8.78),
+        (1.0, 7.82, 8.78),
+    ]
+    side_zs = [-1.95, -1.20, -0.45, 0.32, 1.10, 1.88, 2.62]
+    for side, inside_x, wall_x in side_specs:
+        for index, z in enumerate(side_zs):
+            x = inside_x + side * rng.uniform(-0.08, 0.12)
+            center = (x, 0.36 + rng.uniform(-0.04, 0.08), z + rng.uniform(-0.12, 0.12))
+            _add_leaf_cluster(scene, center, rng.uniform(0.38, 0.58), rng.randint(12, 18), leaf, leaf_light, rng)
+
+            if index % 2 == 0:
+                scene.add_frustum_between(
+                    (x - side * 0.10, 0.10, z - 0.08),
+                    (x - side * 0.06, 0.70 + rng.uniform(-0.06, 0.08), z + 0.08),
+                    0.025,
+                    0.018,
+                    trunk,
+                    segments=7,
+                )
+
+        # Dây leo có nhánh và cụm tán lá bám tường, thay cho các ô xanh rời rạc.
+        for z in [-2.08, -1.38, -0.68, 0.08, 0.82, 1.58, 2.34]:
+            _add_wall_climber(
+                scene,
+                wall_x=wall_x,
+                side=side,
+                z=z + rng.uniform(-0.08, 0.08),
+                base_y=rng.uniform(0.16, 0.28),
+                height=rng.uniform(0.92, 1.25),
+                lean=rng.uniform(-0.20, 0.20),
+                vine=bamboo,
+                branch=trunk,
+                leaf=leaf,
+                leaf_light=leaf_light,
+                rng=rng,
+            )
+
+    # Cây nhỏ ở hai hông sau nhà, tán cao hơn tường để nhìn rõ từ các góc bên.
+    side_trees = [
+        (-7.72, -0.72, 1.65, 0.45),
+        (-7.88, 1.32, 1.95, 0.52),
+        (-7.64, 2.72, 1.72, 0.48),
+        (7.72, -0.62, 1.70, 0.46),
+        (7.88, 1.20, 1.92, 0.52),
+        (7.64, 2.58, 1.78, 0.50),
+    ]
+    for x, z, height, canopy_scale in side_trees:
+        _add_background_tree(
+            scene,
+            base=(x + rng.uniform(-0.08, 0.08), 0.12, z + rng.uniform(-0.10, 0.10)),
+            height=height * rng.uniform(0.92, 1.08),
+            canopy_scale=canopy_scale * rng.uniform(0.90, 1.12),
+            trunk=trunk,
+            leaf=leaf,
+            leaf_light=leaf_light,
+            rng=rng,
+        )
+
+    # Một vài khóm cau thấp ở góc hông trước để nối với sân gạch.
+    _add_areca_palm(scene, (-7.72, 0.08, -1.92), height=2.18, trunk=bamboo, leaf=leaf, leaf_light=leaf_light, rng=rng)
+    _add_areca_palm(scene, (7.72, 0.08, -1.82), height=2.24, trunk=bamboo, leaf=leaf, leaf_light=leaf_light, rng=rng)
+
+    # Rêu nền dưới bụi cây giúp chân tường bớt trống nhưng không còn thành các chấm riêng lẻ.
+    for side, inside_x, _ in side_specs:
+        for z in [-1.55, -0.35, 0.85, 2.05, 2.95]:
+            scene.add_box((inside_x - side * 0.08, 0.13, z), (0.42, 0.025, 0.22), moss)
+
+
+def _add_wall_climber(
+    scene: SceneMesh,
+    *,
+    wall_x: float,
+    side: float,
+    z: float,
+    base_y: float,
+    height: float,
+    lean: float,
+    vine: int,
+    branch: int,
+    leaf: int,
+    leaf_light: int,
+    rng: Random,
+) -> None:
+    """Dây leo sát tường có thân, nhánh và tán lá low-poly."""
+    inner_x = wall_x - side * 0.055
+    top_y = base_y + height
+
+    bottom = (inner_x, base_y, z)
+    top = (inner_x, top_y, z + lean)
+    scene.add_box_between(bottom, top, 0.016, vine, width=0.022)
+
+    # Nhánh ngang/chéo mọc ra hai phía để khi nhìn ngang tường thấy rõ cành.
+    for step in range(4):
+        t = (step + 1) / 5.0
+        y = base_y + height * t
+        stem_z = z + lean * t
+        branch_side = -1.0 if step % 2 == 0 else 1.0
+        branch_len = rng.uniform(0.22, 0.42)
+        start = (inner_x - side * 0.010, y, stem_z)
+        end = (
+            inner_x - side * rng.uniform(0.05, 0.10),
+            y + rng.uniform(0.04, 0.14),
+            stem_z + branch_side * branch_len,
+        )
+        scene.add_box_between(start, end, 0.012, branch, width=0.017)
+        _add_leaf_cluster(scene, end, rng.uniform(0.16, 0.27), rng.randint(8, 13), leaf, leaf_light, rng)
+
+        # Vài lá đơn nhỏ nằm dọc nhánh để tán không bị gom thành khối tròn quá đều.
+        for leaf_i in range(2):
+            lt = (leaf_i + 1) / 3.0
+            leaf_center = v_lerp(start, end, lt)
+            leaf_center = (leaf_center[0] - side * 0.018, leaf_center[1] + rng.uniform(-0.02, 0.04), leaf_center[2])
+            _add_single_leaf(scene, leaf_center, rng.uniform(0.18, 0.28), leaf_light if leaf_i == 0 else leaf, rng)
+
+    # Tán nhỏ ở ngọn dây leo để phần trên tường có cụm lá rõ hơn.
+    crown = (inner_x - side * 0.08, top_y + rng.uniform(-0.02, 0.08), z + lean + rng.uniform(-0.08, 0.08))
+    _add_leaf_cluster(scene, crown, rng.uniform(0.24, 0.38), rng.randint(14, 22), leaf, leaf_light, rng)
 
 
 def _add_water_jar(scene: SceneMesh, center: Vec3, scale: float, jar: int, jar_dark: int, moss: int) -> None:
