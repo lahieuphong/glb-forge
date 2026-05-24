@@ -19,7 +19,7 @@ class Province:
 
     @property
     def output_dir(self) -> str:
-        return f"{self.code}-{self.output_name}"
+        return f"{self.code}_{self.output_name}"
 
 
 @dataclass(frozen=True)

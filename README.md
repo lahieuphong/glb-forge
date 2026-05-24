@@ -5,7 +5,7 @@
 Project hiện có một di tích:
 
 ```text
-output/35-Ninh-Binh/Nha-co-Trang-An.glb
+output/35_ninh_binh/nha_co_trang_an.glb
 ```
 
 Code không cần Blender và không cần thư viện ngoài. Toàn bộ mesh, normal, material và scene được tạo bằng Python rồi ghi trực tiếp ra GLB.
@@ -18,8 +18,8 @@ glb-forge/
 ├─ README.md
 ├─ output/
 │  ├─ .gitkeep
-│  └─ 35-Ninh-Binh/
-│     └─ Nha-co-Trang-An.glb
+│  └─ 35_ninh_binh/
+│     └─ nha_co_trang_an.glb
 ├─ src/
 │  └─ glb_forge/
 │     ├─ __init__.py
@@ -111,7 +111,7 @@ python3.12 scripts/generate_all.py
 Kết quả:
 
 ```text
-output/35-Ninh-Binh/Nha-co-Trang-An.glb
+output/35_ninh_binh/nha_co_trang_an.glb
 ```
 
 ## Quy Ước Source Và Output
@@ -123,13 +123,13 @@ src/glb_forge/scenes/trang_an_house.py
 generators/35_ninh_binh/nha_co_trang_an.py
 ```
 
-Output dùng tên đẹp để quản lý asset:
+Output dùng cùng `snake_case` để quản lý asset:
 
 ```text
-output/35-Ninh-Binh/Nha-co-Trang-An.glb
+output/35_ninh_binh/nha_co_trang_an.glb
 ```
 
-Không cần bọc source theo đúng tên output như `35-Ninh-Binh/Nha-co-Trang-An`, vì tên có dấu gạch ngang không phù hợp để import trong Python. Source nên giữ dạng `snake_case`, còn output giữ dạng dễ đọc.
+Source và output đều dùng `snake_case` để đồng bộ với nhau và dễ quản lý khi có nhiều di tích.
 
 ## Di Tích Hiện Có
 
@@ -154,7 +154,7 @@ src/glb_forge/sites/provinces/ninh_binh.py
 Output:
 
 ```text
-output/35-Ninh-Binh/Nha-co-Trang-An.glb
+output/35_ninh_binh/nha_co_trang_an.glb
 ```
 
 ## Thêm Di Tích Mới

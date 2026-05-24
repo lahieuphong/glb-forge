@@ -8,7 +8,7 @@ NINH_BINH = Province(
     code="35",
     slug="ninh-binh",
     name="Ninh Bình",
-    output_name="Ninh-Binh",
+    output_name="ninh_binh",
 )
 
 
@@ -16,7 +16,7 @@ TRANG_AN_HERITAGE_HOUSE = HeritageSite(
     site_id="nha-co-trang-an",
     name="Nhà cổ Tràng An",
     province=NINH_BINH,
-    output_name="Nha-co-Trang-An",
+    output_name="nha_co_trang_an",
     create_scene=lambda: create_trang_an_house(seed=42),
 )
 
