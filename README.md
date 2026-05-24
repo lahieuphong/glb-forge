@@ -1,102 +1,81 @@
-# 35 Ninh Binh Nha Co Trang An GLB
+# 35 Ninh Bình - Nhà Cổ Tràng An GLB
 
 Project Python thuần để tạo file `.glb` procedural cho **nhà cổ Tràng An, Ninh Bình**.
 
-Project hiện có một di tích:
+Output hiện tại:
 
 ```text
 output/35_ninh_binh/nha_co_trang_an.glb
 ```
 
-Code không cần Blender và không cần thư viện ngoài. Toàn bộ mesh, normal, material và scene được tạo bằng Python rồi ghi trực tiếp ra GLB.
+Project không cần Blender và không cần thư viện ngoài. Mesh, normal, material và scene đều được tạo bằng Python.
 
-## Cấu Trúc
-
-```text
-35-ninh-binh-nha-co-trang-an-glb/
-├─ pyproject.toml
-├─ README.md
-├─ output/
-│  ├─ .gitkeep
-│  └─ 35_ninh_binh/
-│     └─ nha_co_trang_an.glb
-├─ src/
-│  └─ glb_forge/
-│     ├─ __init__.py
-│     ├─ build.py
-│     ├─ scene.py
-│     ├─ scene_writer.py
-│     ├─ scenes/
-│     │  ├─ __init__.py
-│     │  └─ trang_an_house.py
-│     └─ sites/
-│        ├─ __init__.py
-│        ├─ models.py
-│        ├─ registry.py
-│        └─ provinces/
-│           ├─ __init__.py
-│           └─ ninh_binh.py
-├─ generators/
-│  └─ 35_ninh_binh/
-│     └─ nha_co_trang_an.py
-└─ scripts/
-   ├─ generate_all.py
-   └─ generate_site.py
-```
-
-## Vai Trò Các Phần
+## Cấu Trúc Chính
 
 ```text
-src/glb_forge/scene.py
-```
+src/glb_forge/
+├─ scene.py                 # primitive + helper hình học
+├─ scene_writer.py          # ghi SceneMesh ra GLB
+├─ build.py                 # luồng generate dùng chung
+├─ scenes/
+│  └─ trang_an_house.py     # source dựng nhà cổ Tràng An
+└─ sites/
+   ├─ models.py             # model Province, HeritageSite
+   ├─ registry.py           # đăng ký + kiểm tra trùng di tích
+   └─ provinces/
+      └─ ninh_binh.py       # metadata Ninh Bình / Tràng An
 
-Chứa các primitive và helper hình học dùng chung: box, quad, triangle, frustum, lathe, vector math.
-
-```text
-src/glb_forge/scene_writer.py
-```
-
-Ghi `SceneMesh` ra file `.glb`.
-
-```text
-src/glb_forge/build.py
-```
-
-Đóng gói luồng generate chung: lấy một di tích, tạo scene, ghi GLB, trả về thông tin kết quả.
-
-```text
-src/glb_forge/scenes/
-```
-
-Chứa source dựng hình của từng di tích. Hiện tại:
-
-```text
-src/glb_forge/scenes/trang_an_house.py
-```
-
-Đây là source chính tạo model nhà cổ Tràng An.
-
-```text
-src/glb_forge/sites/
-```
-
-Chứa metadata để phân biệt di tích, tỉnh, registry key và tên file output. Phần này giúp nhiều di tích sau này không bị trùng tên hoặc ghi nhầm output.
-
-```text
 generators/
-```
+└─ 35_ninh_binh/
+   └─ nha_co_trang_an.py    # lệnh chạy riêng di tích này
 
-Chứa lệnh chạy riêng cho từng di tích. Đây là lớp tiện dụng, không phải nơi chứa logic dựng hình chính.
+scripts/
+├─ generate_site.py         # generate theo registry key
+└─ generate_all.py          # generate toàn bộ di tích đã đăng ký
+```
 
 ## Chạy Code
 
-Đứng ở thư mục gốc `35-ninh-binh-nha-co-trang-an-glb`, chạy riêng nhà cổ Tràng An:
+Sau khi clone project về máy khác, chạy theo các bước sau.
+
+1. Vào thư mục project:
+
+```bash
+cd 35-ninh-binh-nha-co-trang-an-glb
+```
+
+2. Kiểm tra Python. Project cần Python `>= 3.10`:
+
+```bash
+python3.12 --version
+```
+
+Nếu máy không có `python3.12`, có thể thử:
+
+```bash
+python3 --version
+```
+
+3. Tạo môi trường ảo nếu muốn chạy gọn trong project:
+
+```bash
+python3.12 -m venv .venv
+source .venv/bin/activate
+```
+
+4. Cài project ở chế độ editable:
+
+```bash
+pip install -e .
+```
+
+5. Generate file GLB:
 
 ```bash
 python3.12 generators/35_ninh_binh/nha_co_trang_an.py
 ```
 
-Hoặc chạy theo registry key:
+Hoặc generate theo registry key:
 
 ```bash
 python3.12 scripts/generate_site.py 35-ninh-binh/nha-co-trang-an
@@ -108,93 +87,17 @@ Hoặc generate toàn bộ di tích đã đăng ký:
 python3.12 scripts/generate_all.py
 ```
 
-Kết quả:
+Kết quả nằm tại:
 
 ```text
 output/35_ninh_binh/nha_co_trang_an.glb
 ```
 
-## Quy Ước Source Và Output
-
-Source code dùng tên Python-friendly:
+## Thông Tin Di Tích
 
 ```text
-src/glb_forge/scenes/trang_an_house.py
-generators/35_ninh_binh/nha_co_trang_an.py
-```
-
-Output dùng cùng `snake_case` để quản lý asset:
-
-```text
-output/35_ninh_binh/nha_co_trang_an.glb
-```
-
-Source và output đều dùng `snake_case` để đồng bộ với nhau và dễ quản lý khi có nhiều di tích.
-
-## Di Tích Hiện Có
-
-Registry key:
-
-```text
-35-ninh-binh/nha-co-trang-an
-```
-
-Scene source:
-
-```text
-src/glb_forge/scenes/trang_an_house.py
-```
-
-Metadata:
-
-```text
-src/glb_forge/sites/provinces/ninh_binh.py
-```
-
-Output:
-
-```text
-output/35_ninh_binh/nha_co_trang_an.glb
-```
-
-## Thêm Di Tích Mới
-
-Mỗi di tích nên có một source scene riêng trong:
-
-```text
-src/glb_forge/scenes/
-```
-
-Sau đó khai báo di tích trong đúng file tỉnh:
-
-```text
-src/glb_forge/sites/provinces/
-```
-
-Nếu cần lệnh chạy riêng, thêm file tương ứng trong:
-
-```text
-generators/
-```
-
-Luồng thêm di tích:
-
-```text
-1. Tạo hàm dựng scene mới trong src/glb_forge/scenes/
-2. Import hàm đó trong file tỉnh tương ứng ở src/glb_forge/sites/provinces/
-3. Khai báo HeritageSite với site_id, name, province, output_name, create_scene
-4. Thêm di tích vào danh sách <TINH>_SITES
-5. Chạy scripts/generate_all.py hoặc scripts/generate_site.py
-```
-
-`src/glb_forge/sites/registry.py` sẽ kiểm tra trùng registry key và trùng output path trước khi generate.
-
-## Dùng Trong Code
-
-```python
-from glb_forge import generate_site, get_site
-
-site = get_site("35-ninh-binh/nha-co-trang-an")
-result = generate_site(site, "output")
-print(result.path)
+Registry key: 35-ninh-binh/nha-co-trang-an
+Scene source: src/glb_forge/scenes/trang_an_house.py
+Metadata:     src/glb_forge/sites/provinces/ninh_binh.py
+Output:       output/35_ninh_binh/nha_co_trang_an.glb
 ```
