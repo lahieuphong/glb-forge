@@ -1,9 +1,8 @@
 # GLB Forge
 
-**GLB Forge** là project Python thuần để học và tạo file `.glb` bằng code.
-Project bắt đầu từ mesh đơn giản như cube, pyramid, triangle, rồi nâng dần lên scene procedural phức tạp như nhà cổ Tràng An/Ninh Bình.
+**GLB Forge** là project Python thuần để tạo file `.glb` procedural cho scene nhà cổ Tràng An/Ninh Bình.
 
-Không cần Blender, không cần thư viện ngoài. Code tự tạo mesh, normal, material, scene rồi ghi trực tiếp ra file GLB.
+Project không cần Blender và không cần thư viện ngoài. Code tự tạo hình học, normal, material, scene rồi ghi trực tiếp ra file GLB.
 
 ## Cấu trúc project
 
@@ -11,34 +10,18 @@ Không cần Blender, không cần thư viện ngoài. Code tự tạo mesh, nor
 glb-forge/
 ├─ pyproject.toml
 ├─ README.md
-├─ .gitignore
 ├─ output/
 │  ├─ .gitkeep
-│  ├─ cube.glb
-│  ├─ pyramid.glb
-│  ├─ custom_triangle.glb
 │  └─ trang_an_heritage_house.glb
 ├─ src/
 │  └─ glb_forge/
 │     ├─ __init__.py
-│     ├─ mesh.py
-│     ├─ glb_writer.py
 │     ├─ scene.py
 │     ├─ scene_writer.py
-│     ├─ shapes/
-│     │  ├─ __init__.py
-│     │  ├─ cube.py
-│     │  └─ pyramid.py
 │     └─ scenes/
 │        ├─ __init__.py
 │        └─ trang_an_house.py
 ├─ examples/
-│  ├─ 01_cube/
-│  │  └─ generate.py
-│  ├─ 02_pyramid/
-│  │  └─ generate.py
-│  ├─ 03_custom_mesh/
-│  │  └─ generate.py
 │  └─ 04_trang_an_house/
 │     └─ generate.py
 └─ scripts/
@@ -47,30 +30,21 @@ glb-forge/
 
 ## Chạy nhanh
 
-Đứng ở thư mục gốc `glb-forge`, chạy scene số 04:
+Đứng ở thư mục gốc `glb-forge`, chạy:
 
 ```bash
-python examples/04_trang_an_house/generate.py
+python3.12 examples/04_trang_an_house/generate.py
+```
+
+Hoặc dùng script tổng:
+
+```bash
+python3.12 scripts/generate_all.py
 ```
 
 Kết quả:
 
 ```text
-output/trang_an_heritage_house.glb
-```
-
-Chạy tất cả ví dụ:
-
-```bash
-python scripts/generate_all.py
-```
-
-Kết quả:
-
-```text
-output/cube.glb
-output/pyramid.glb
-output/custom_triangle.glb
 output/trang_an_heritage_house.glb
 ```
 
@@ -79,16 +53,10 @@ output/trang_an_heritage_house.glb
 Tạo môi trường ảo:
 
 ```bash
-python -m venv .venv
+python3.12 -m venv .venv
 ```
 
-Windows PowerShell:
-
-```powershell
-.\.venv\Scripts\Activate.ps1
-```
-
-macOS/Linux:
+Kích hoạt trên macOS/Linux:
 
 ```bash
 source .venv/bin/activate
@@ -100,7 +68,7 @@ Cài project ở chế độ editable:
 pip install -e .
 ```
 
-Sau đó vẫn chạy được các ví dụ như bình thường:
+Sau đó chạy:
 
 ```bash
 python examples/04_trang_an_house/generate.py
@@ -108,27 +76,16 @@ python examples/04_trang_an_house/generate.py
 
 ## Luồng tạo GLB
 
-Với mesh đơn giản:
-
 ```text
-shape Python file
-→ MeshData
-→ write_glb()
-→ output/*.glb
-```
-
-Với scene lớn:
-
-```text
-scene Python file
+src/glb_forge/scenes/trang_an_house.py
 → SceneMesh nhiều material
 → write_scene_glb()
-→ output/*.glb
+→ output/trang_an_heritage_house.glb
 ```
 
-## Scene 04: Trang An Heritage House
+## Scene Tràng An
 
-File chính:
+File scene chính:
 
 ```text
 src/glb_forge/scenes/trang_an_house.py
@@ -140,11 +97,9 @@ File chạy:
 examples/04_trang_an_house/generate.py
 ```
 
-Scene số 04 là bản cuối đã sửa:
+Scene hiện có:
 
 ```text
-- có cây xanh thật sự phía sau nhà, gồm thân, cành và tán lá low-poly
-- mái ngói phía sau đã giống mặt mái phía trước, không còn bị trơn/phẳng
 - nhà một tầng bố cục ngang, thấp, dạng nhà cổ 5 gian
 - mái ngói đỏ nâu cũ, hiên rộng, cột gỗ, chân tảng đá
 - nền đá cao, bậc tam cấp
@@ -154,13 +109,10 @@ Scene số 04 là bản cuối đã sửa:
 - núi đá vôi xám và cây xanh phía sau gợi Tràng An
 ```
 
-Toàn bộ model được tạo bằng hình học procedural, không dùng texture ảnh thật, nên dễ học và dễ chỉnh code.
-
 ## Import mẫu
 
 ```python
-from glb_forge import write_scene_glb
-from glb_forge.scenes import create_trang_an_house
+from glb_forge import create_trang_an_house, write_scene_glb
 
 scene = create_trang_an_house(seed=42)
 write_scene_glb(scene, "output/trang_an_heritage_house.glb")
